@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — Alex Mercer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy-deepest: #050d1a;
+      --navy-deep:    #0a1628;
+      --navy-mid:     #0f2040;
+      --navy-soft:    #162a52;
+      --navy-accent:  #1e3a6e;
+      --gray-light:   #d8dde8;
+      --gray-mid:     #9aa3b4;
+      --gray-dim:     #5c6475;
+      --gold:         #c9a84c;
+      --gold-pale:    #e8d09a;
+      --white:        #f0f4ff;
+      --radius:       4px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy-deepest);
+      color: var(--gray-light);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.35;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: linear-gradient(180deg, rgba(5,13,26,0.98) 0%, rgba(5,13,26,0) 100%);
+      z-index: 900;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.35rem;
+      letter-spacing: 0.04em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      color: var(--gray-mid); text-decoration: none;
+      font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold-pale); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 0 4rem; position: relative; overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(30,58,110,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,58,110,0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(30,58,110,0.45) 0%, transparent 70%);
+      top: 50%; left: 15%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .hero-content { position: relative; max-width: 720px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.6rem;
+      opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 28px; height: 1px; background: var(--gold);
+    }
+    h1 {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.05;
+      color: var(--white); margin-bottom: 1.4rem;
+      opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+    }
+    h1 em { font-style: italic; color: var(--gold-pale); }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--gray-mid); max-width: 500px; margin-bottom: 2.8rem;
+      opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s 0.65s forwards;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.9rem; border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; border: none; transition: all 0.25s;
+    }
+    .btn-primary { background: var(--gold); color: var(--navy-deepest); }
+    .btn-primary:hover {
+      background: var(--gold-pale); transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(201,168,76,0.25);
+    }
+    .btn-outline { background: transparent; color: var(--gray-light); border: 1px solid var(--navy-accent); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold-pale); transform: translateY(-2px); }
+
+    /* SHARED SECTION */
+    section { padding: 7rem 4rem; }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.9rem;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 22px; height: 1px; background: var(--gold);
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.9rem); font-weight: 700;
+      color: var(--white); margin-bottom: 3.5rem; line-height: 1.2;
+    }
+
+    /* ABOUT */
+    #about { background: var(--navy-deep); }
+    .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center; max-width: 1100px; margin: 0 auto;
+    }
+    .about-img-wrap { position: relative; }
+    .about-img {
+      width: 100%; aspect-ratio: 4/5; border-radius: 2px;
+      background: var(--navy-mid); overflow: hidden; position: relative;
+    }
+    .about-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, transparent 60%);
+    }
+    .about-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 900;
+      color: var(--navy-accent);
+      background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-soft) 100%);
+    }
+    .about-frame {
+      position: absolute; top: -14px; left: -14px; right: 14px; bottom: -14px;
+      border: 1px solid var(--navy-accent); border-radius: 2px; pointer-events: none;
+    }
+    .about-text p { color: var(--gray-mid); margin-bottom: 1.3rem; }
+    .about-info {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem;
+    }
+    .about-info-item { font-size: 0.82rem; color: var(--gray-dim); }
+    .about-info-item strong { color: var(--gold); font-weight: 500; display: block; }
+
+    /* SKILLS */
+    #skills { background: var(--navy-deepest); }
+    .skills-inner { max-width: 1100px; margin: 0 auto; }
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .skill-card {
+      background: var(--navy-deep); border: 1px solid rgba(30,58,110,0.5);
+      border-radius: 2px; padding: 2rem 2.2rem; transition: all 0.3s;
+    }
+    .skill-card:hover {
+      border-color: var(--gold); transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .skill-icon {
+      width: 42px; height: 42px; border-radius: 8px;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem;
+    }
+    .skill-card h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.5rem;
+    }
+    .skill-card p { font-size: 0.88rem; color: var(--gray-dim); line-height: 1.6; margin-bottom: 1.3rem; }
+    .skill-bars { display: flex; flex-direction: column; gap: 0.65rem; }
+    .skill-bar-row { display: flex; align-items: center; gap: 0.8rem; }
+    .skill-bar-label { font-size: 0.73rem; color: var(--gray-mid); width: 80px; flex-shrink: 0; }
+    .skill-bar-track { flex: 1; height: 4px; background: var(--navy-mid); border-radius: 2px; overflow: hidden; }
+    .skill-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-pale));
+      border-radius: 2px; transform-origin: left;
+      animation: barGrow 1.2s ease forwards; transform: scaleX(0);
+    }
+    @keyframes barGrow { to { transform: scaleX(1); } }
+
+    /* PROJECTS */
+    #projects { background: var(--navy-deep); }
+    .projects-inner { max-width: 1100px; margin: 0 auto; }
+    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .project-card {
+      background: var(--navy-mid); border: 1px solid rgba(30,58,110,0.5);
+      border-radius: 2px; overflow: hidden; transition: all 0.3s; cursor: pointer;
+    }
+    .project-card:hover {
+      border-color: var(--navy-accent); transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-thumb {
+      aspect-ratio: 16/9; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .project-overlay {
+      position: absolute; inset: 0; background: rgba(5,13,26,0.75);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+    }
+    .project-body { padding: 1.4rem 1.6rem 1.6rem; }
+    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .project-tag { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); opacity: 0.8; }
+    .project-tag + .project-tag::before { content: '·'; margin-right: 0.5rem; color: var(--gray-dim); }
+    .project-title {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.45rem; line-height: 1.3;
+    }
+    .project-desc { font-size: 0.87rem; color: var(--gray-dim); line-height: 1.6; }
+    .project-links { display: flex; gap: 1rem; margin-top: 1rem; }
+    .project-link {
+      font-size: 0.73rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gray-mid); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--gold-pale); }
+
+    /* CERTIFICATES */
+    #certificates { background: var(--navy-deepest); }
+    .certificates-inner { max-width: 1100px; margin: 0 auto; }
+    .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .cert-card {
+      background: var(--navy-mid); border: 1px solid rgba(30,58,110,0.5);
+      border-radius: 2px; overflow: hidden; transition: all 0.3s; cursor: pointer;
+    }
+    .cert-card:hover {
+      border-color: var(--gold); transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .cert-card:hover .cert-overlay { opacity: 1; }
+    .cert-thumb {
+      aspect-ratio: 16/9; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--navy-deep);
+    }
+    .cert-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cert-overlay {
+      position: absolute; inset: 0; background: rgba(5,13,26,0.75);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+    }
+    .cert-body { padding: 1.4rem 1.6rem 1.6rem; }
+    .cert-badge-row {
+      display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.8rem;
+    }
+    .cert-badge {
+      width: 42px; height: 42px; flex-shrink: 0; border-radius: 6px;
+      background: #fff; border: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px;
+    }
+    .cert-badge img { width: 100%; height: 100%; object-fit: contain; }
+    .cert-info h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.2rem;
+    }
+    .cert-issuer { font-size: 0.79rem; color: var(--gold); letter-spacing: 0.06em; }
+    .cert-info p { font-size: 0.87rem; color: var(--gray-dim); line-height: 1.6; margin-top: 0.45rem; }
+    .cert-date {
+      font-size: 0.71rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gray-dim); margin-top: 0.7rem;
+    }
+
+    /* HOBBIES */
+    #hobbies { background: var(--navy-deep); }
+    .hobbies-inner { max-width: 1100px; margin: 0 auto; }
+    .hobbies-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .hobby-card {
+      background: var(--navy-mid); border: 1px solid rgba(30,58,110,0.5);
+      border-radius: 2px; padding: 2rem 2.2rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .hobby-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .hobby-card:hover { border-color: var(--navy-accent); transform: translateY(-3px); }
+    .hobby-card:hover::before { opacity: 1; }
+    .hobby-emoji { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
+    .hobby-card h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700;
+      color: var(--white); margin-bottom: 0.5rem;
+    }
+    .hobby-card p { font-size: 0.88rem; color: var(--gray-dim); line-height: 1.6; }
+    .hobby-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .hobby-tag {
+      padding: 0.28rem 0.75rem; border: 1px solid var(--navy-accent);
+      border-radius: 2px; font-size: 0.72rem; color: var(--gray-dim);
+    }
+
+    /* CONTACT */
+    #contact { background: var(--navy-mid); }
+    .contact-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+    .contact-inner h2 { margin-bottom: 1rem; }
+    .contact-inner > p { color: var(--gray-mid); margin-bottom: 2.8rem; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--gray-mid); text-decoration: none;
+      font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: var(--gold-pale); }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy-deepest);
+      border-top: 1px solid rgba(30,58,110,0.4);
+      padding: 2rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p { font-size: 0.78rem; color: var(--gray-dim); letter-spacing: 0.06em; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--navy-accent), transparent);
+      margin: 0 4rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      section { padding: 5rem 2rem; }
+      #hero { padding: 0 2rem; }
+      .about-inner,
+      .skills-grid,
+      .projects-grid,
+      .cert-grid,
+      .hobbies-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 1.5rem 2rem; }
+      .divider { margin: 0 2rem; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      h1 { font-size: 2.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">Port<span></span>Folio</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certificates">Certs</a></li>
+      <li><a href="#hobbies">Hobbies</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">BS INFORMATION SYSTEM</div>
+      <h1><br><em>Hi!,</em>I'm Marvy Dominno</h1>
+      <p class="hero-sub">
+        A 1st Year BSIS, a dedicate to be a Graphic Designer
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">See My Work</a>
+        <a href="#contact" class="btn btn-outline">Connect Me</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-img-wrap reveal">
+        <div class="about-frame"></div>
+        <div class="about-img">
+          <img src="img/Profile.jpeg" alt="Alex Mercer" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"/>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="section-label">About Me</div>
+        <h2>Student.<br><em style="font-style:italic;color:var(--gold-pale)">Problem Solver.</em></h2>
+        <p>
+          I am Marvy Rose Dominno, a Bachelor of Science in Information Systems (BSIS) student who is hardworking, determined, and eager to learn. As a SPES beneficiary, I value the opportunities that help me pursue my education and develop my skills.
+        </p>
+        <p>
+          I enjoy exploring new things, gaining knowledge, and challenging myself through different experiences. I enjoy participating in school activities because they allow me to learn, meet new people, and create meaningful experiences. I am also interested in arts, which enables me to express my creativity and appreciate different forms of design and expression. Through dedication, perseverance, and a positive attitude, I strive to achieve my goals and become a successful professional in the future.
+        </p>
+        <div class="about-info">
+          <div class="about-info-item"><strong>Degree</strong>B.S. Information System</div>
+          <div class="about-info-item"><strong>Year</strong>1st Year · 2025-2026</div>
+          <div class="about-info-item"><strong>From</strong>Panabo City, Philippines🇵🇭</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="skills-inner">
+      <div class="section-label reveal">Skills</div>
+      <h2 class="reveal">What I work with</h2>
+      <div class="skills-grid">
+
+        <!-- Skill 1 -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5">
+              <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
+          <h3>Frontend Development</h3>
+          <p>Building responsive, accessible, and Application interfaces using modern frameworks and tools.</p>
+          <div class="skill-bars">
+            <div class="skill-bar-row">
+              <span class="skill-bar-label">JAVA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill 2 -->
+        <div class="skill-card reveal">
+          <div class="skill-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3>Backend & Data</h3>
+          <p>Designing server-side logic, REST APIs, and working with relational and non-relational databases.</p>
+          <div class="skill-bars">
+            <div class="skill-bar-row">
+              <span class="skill-bar-label">JAVA</span>
+            </div>
+            <div class="skill-bar-row">
+              <span class="skill-bar-label">My SQL</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="projects-inner">
+      <div class="section-label reveal">Projects</div>
+      <h2 class="reveal">Things I've built</h2>
+      <div class="projects-grid">
+
+        <!-- Project 1 -->
+        <div class="project-card reveal">
+          <div class="project-thumb">
+            <img src="img/Project.jpeg" alt="StudyTrack Dashboard" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+            <div class="project-overlay">View Project →</div>
+          </div>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="project-tag">JAVA</span>
+              <span class="project-tag">My SQL</span>
+            </div>
+            <div class="project-title">Membership and Reservation Management System for Relampagos Pickleball</div>
+            <p class="project-desc">A system that simplifies member registration, court reservations, and schedule management, providing a faster and more organized experience for players and administrators.</p>
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CERTIFICATES -->
+  <section id="certificates">
+    <div class="certificates-inner">
+      <div class="section-label reveal">Certificates</div>
+      <h2 class="reveal">Credentials earned</h2>
+      <div class="cert-grid">
+
+        <!-- Cert 1 -->
+        <div class="cert-card reveal">
+          <div class="cert-thumb">
+            <img src="img/Certificate.jpeg" alt="Meta Front-End Developer Certificate"/>
+            <div class="cert-overlay">View Certificate →</div>
+          </div>
+          <div class="cert-body">
+            <div class="cert-badge-row">
+              <div class="cert-info">
+                <h3>MTV SPOOF CERTIFICATE</h3>
+                <div class="cert-issuer">ByteFest 3.0</div>
+              </div>
+            </div>
+            <p>1ST RUNNER UP, on LIVE MTV SPOOF during ByteFest 3.0 conducted by Institute of Computing Local Studen Goverme t</p>
+            <div class="cert-date">Completed · April 2026</div>
+          </div>
+        </div>
+
+        <!-- Cert 2 -->
+        <div class="cert-card reveal">
+          <div class="cert-thumb">
+            <img src="img/Certificate1.jpeg" alt="AWS Cloud Practitioner Certificate"/>
+            <div class="cert-overlay">View Certificate →</div>
+          </div>
+          <div class="cert-body">
+            <div class="cert-badge-row">
+              <div class="cert-info">
+                <h3>MTV SPOOF CERTIFICATE</h3>
+                <div class="cert-issuer">MULTIMEDIA FESTIVAL</div>
+              </div>
+            </div>
+            <p>MTV SPOOF Champion of Awarded to "WHAT IS LOVE". </p>
+            <div class="cert-date">Completed · December 2025</div>
+          </div>
+        </div>
+        
+         <div class="cert-card reveal">
+          <div class="cert-thumb">
+            <img src="img/Certificate2.jpeg" alt="AWS Cloud Practitioner Certificate"/>
+            <div class="cert-overlay">View Certificate →</div>
+          </div>
+          <div class="cert-body">
+            <div class="cert-badge-row">
+              <div class="cert-info">
+                <h3>MTV SPOOF CERTIFICATE</h3>
+                <div class="cert-issuer">MULTIMEDIA FESTIVAL</div>
+              </div>
+            </div>
+            <p>Best MTV SPOOF K-pop Category awarded to "WHAT IS LOVE".</p>
+            <div class="cert-date">Completed · December 2025</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- HOBBIES -->
+  <section id="hobbies">
+    <div class="hobbies-inner">
+      <div class="section-label reveal">Hobbies</div>
+      <h2 class="reveal">Beyond the screen</h2>
+      <div class="hobbies-grid">
+
+        <!-- Hobby 1 -->
+        <div class="hobby-card reveal">
+          <span class="hobby-emoji">🎮</span>
+          <h3>GAMING</h3>
+          <p>
+          Gaming helps me develop problem-solving, strategic thinking, and adaptability, which are valuable skills in programming and software development.
+          </p>
+          <div class="hobby-tags">
+            <span class="hobby-tag">Online Games</span>
+          </div>
+        </div>
+
+        <!-- Hobby 2 -->
+        <div class="hobby-card reveal">
+          <span class="hobby-emoji">✍️</span>
+          <h3>SKETCHING</h3>
+          <p>
+            Sketching enhances my creativity and attention to detail, helping me design user-friendly interfaces and visualize ideas when developing software.
+          </p>
+          <div class="hobby-tags">
+            <span class="hobby-tag">Drawing</span>
+          
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-label reveal">Contact</div>
+      <h2 class="reveal">Let's connect &amp;<br><em style="font-style:italic;color:var(--gold-pale)">collaborate</em></h2>
+      <p class="reveal">
+        Let's connect and create something great together.
+      </p>
+        <a href="https://www.facebook.com/share/1M9EDfVC9X/" class="contact-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          Facebook
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Marvy Dominno — IS Student Portfolio</p>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    document.addEventListener('mousemove', (e) => {
+      const glow = document.querySelector('.hero-glow');
+      if (!glow) return;
+      const xPct = (e.clientX / window.innerWidth - 0.5) * 30;
+      const yPct = (e.clientY / window.innerHeight - 0.5) * 20;
+      glow.style.transform = `translate(calc(-50% + ${xPct}px), calc(-50% + ${yPct}px))`;
+    });
+  </script>
+</body>
+</html>
